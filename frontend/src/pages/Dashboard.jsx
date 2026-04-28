@@ -8,7 +8,7 @@ export default function Dashboard() {
   const token = localStorage.getItem("token");
 
   const fetchTasks = async () => {
-    const res = await axios.get("http://localhost:5000/api/tasks", {
+    const res = await axios.get("https://smart-task-app-acsx.onrender.com/api/tasks", {
       headers: { Authorization: `Bearer ${token}` },
     });
     setTasks(res.data);
@@ -18,7 +18,7 @@ export default function Dashboard() {
     if (!title) return;
 
     await axios.post(
-      "http://localhost:5000/api/tasks",
+      "https://smart-task-app-acsx.onrender.com/api/tasks",
       { title, priority: "High" },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -28,7 +28,7 @@ export default function Dashboard() {
   };
 
   const deleteTask = async (id) => {
-    await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+    await axios.delete(`https://smart-task-app-acsx.onrender.com/api/tasks/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     fetchTasks();
@@ -36,7 +36,7 @@ export default function Dashboard() {
 
   const toggleStatus = async (task) => {
     await axios.put(
-      `http://localhost:5000/api/tasks/${task.id}`,
+      `https://smart-task-app-acsx.onrender.com/api/tasks/${task.id}`,
       {
         status: task.status === "Pending" ? "Completed" : "Pending",
       },
