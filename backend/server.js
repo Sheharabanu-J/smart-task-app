@@ -1,10 +1,14 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 
 const sequelize = require("./config/db");
+
+// Models (IMPORTANT for associations)
 const User = require("./models/User");
 const Task = require("./models/Task");
 
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 
@@ -14,25 +18,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", authRoutes);
-
-// DB Relationship
+// DB Relationships (must come before sync)
 User.hasMany(Task);
 Task.belongsTo(User);
 
-// Sync DB
-sequelize.sync()
-  .then(() => console.log("DB synced"))
-  .catch(err => console.log(err));
+// Routes (keep together)
+app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.send("API Running");
 });
 
-// Start server
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
-});
-app.use("/api/tasks", taskRoutes);
+// Sync DB & start server
+sequelize.sync()
+  .then(() => {
+    console.log("DB synced");
+    app.listen(5000, () => {
+      console.log("Server running on port 5000");
+    });
+  })
+  .catch((err) => {
+    console.error("DB error:", err);
+  });
